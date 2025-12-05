@@ -76,6 +76,7 @@ AFTER MAKING CHANGES TO ANY PYTHON FILE or PROJECT CONFIGURATION:
 
 - Run the tests: `uv run pytest`
 - Run the type checker: `uv run pyright`
-- Run the linter: `.github/lint-all.sh`
+- Run the linter: `uv tool run ruff check`
+- Run the formatter: `uv tool run ruff format`
 
 Fix any issues before declaring the changes complete.
