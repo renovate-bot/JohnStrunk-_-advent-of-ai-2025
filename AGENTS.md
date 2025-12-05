@@ -63,3 +63,12 @@ repository root.
 The `utils/` directory should also include unit tests for any utility
 functions or classes. These tests should execute when `pytest` is run at the
 repository root.
+
+## Running Python code
+
+All Python code in this repository must be run using uv. To run a Python file,
+use the following command:
+
+```bash
+uv run path/to/file.py
+```
