@@ -4,6 +4,8 @@ Day 2 Part 1: Find and sum all invalid product IDs in the given ranges.
 An invalid ID is a number made by repeating a sequence of digits twice.
 """
 
+import sys
+
 
 def is_invalid_id(n: int) -> bool:
     """Return True if n is a number made by repeating a sequence of digits twice."""
@@ -17,7 +19,9 @@ def is_invalid_id(n: int) -> bool:
 
 def main():
     """Read input ranges, find and sum all invalid product IDs, and print the result."""
-    with open("input.txt") as f:
+    # Accept input filename as first argument, default to 'input.txt'
+    input_file = sys.argv[1] if len(sys.argv) > 1 else "input.txt"
+    with open(input_file) as f:
         ranges = f.read().strip().split(",")
     total = 0
     RANGE_SPLIT_COUNT = 2
