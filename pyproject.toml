@@ -1,0 +1,87 @@
+[project]
+name = "advent-of-ai-2025"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pyright==1.1.407",
+    "pytest==9.0.1",
+    "pytest-cov==7.0.0",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self.debug",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc.)?abstractmethod",
+]
+
+[tool.coverage.run]
+branch = true  # Enable branch coverage
+source = ["."] # Source code directories
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[tool.pyright]
+# https://microsoft.github.io/pyright/#/configuration
+deprecateTypingAliases = true
+enableReachabilityAnalysis = true
+include = ["."]
+reportUnnecessaryTypeIgnoreComment = true
+typeCheckingMode = "strict"
+useLibraryCodeForTypes = true
+verboseOutput = true
+
+[tool.pytest.ini_options]
+addopts = [
+    "-rA -q",
+    "--doctest-modules",
+    "--ignore=build.py",        # Don't check build.py
+    "--cov=.",
+    "--cov-config=.coveragerc",
+    "--cov-report=html",
+    "--cov-report=term",
+    "--cov-report=xml",
+]
+
+filterwarnings = [
+    "error",
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+# https://docs.astral.sh/ruff/rules/
+select = [
+    "D",    # Pydocstyle
+    "E101", # Pycodestyle: mixed spaces and tabs
+    "E4",   # Pycodestyle: Imports
+    "E7",   # Pycodestyle: misc
+    "E9",   # Pycodestyle: error
+    "F",    # Pyflakes
+    "I",    # isort
+    "PL",   # pylint
+    "RUF",  # Ruff-specific
+]
+pydocstyle.convention = "pep257"
+
+[tool.uv.pip]
+universal = true
