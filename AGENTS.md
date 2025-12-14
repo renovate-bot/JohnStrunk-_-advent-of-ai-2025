@@ -25,8 +25,10 @@ Each day of Advent of Code is organized into its own directory named `dayXX/`,
 where `XX` is the two-digit day number (e.g., `day01`, `day02`, ..., `day25`).
 Each day's directory contains the following files:
 
-- `puzzle.txt`: The text of that day's challenge as provided by the Advent
-  of Code website.
+- `puzzle-part1.txt`: The text of that day's part1 challenge as provided by
+  the Advent of Code website.
+- `puzzle-part2.txt`: The text of that day's part2 challenge as provided by
+  the Advent of Code website.
 - `part1.py`: The solution code for part 1 of that day's challenge.
 - `part2.py`: The solution code for part 2 of that day's challenge.
 - `input.txt`: The input data for that day's challenge. There may be multiple
@@ -51,10 +53,11 @@ Each day's solution code should take a single input file (e.g., `input.txt` or
 `test-input.txt`) and produce output directly to standard output. The code
 should not read from or write to any other files.
 
+You have a skill for solving these puzzles! Make sure you use it!
+
 ## Testing
 
-Each day's directory must include test cases using the provided
-`test-input.txt` and `test-output.txt` files. The solution code should be
+Each day's directory must include test cases. The solution code should be
 structured to facilitate easy testing and verification of correctness. Tests
 should cover edge cases and typical scenarios as described in the puzzle text.
 The tests for all days should be run when `pytest` is executed at the
