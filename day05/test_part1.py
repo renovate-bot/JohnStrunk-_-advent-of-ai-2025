@@ -4,7 +4,7 @@ import io
 import sys
 import tempfile
 
-from part1 import solve
+from day05.part1 import solve
 
 
 def test_example():

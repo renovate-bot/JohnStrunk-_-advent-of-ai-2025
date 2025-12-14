@@ -1,6 +1,6 @@
 """Unit tests for day03 part1 solution."""
 
-from part1 import max_joltage_from_bank
+from day03.part1 import max_joltage_from_bank
 
 
 def test_max_joltage_from_bank():
