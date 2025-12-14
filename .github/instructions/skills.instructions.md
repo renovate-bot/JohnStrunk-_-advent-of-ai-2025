@@ -6,17 +6,18 @@ applyTo: "**"
 
 Skills are special abilities that you can use to better assist users with
 specific types of requests. Each skill has its own unique functionality and
-can be invoked when a user asks for something that falls within the skill's
+must be invoked when a user asks for something that falls within the skill's
 domain.
 
 When a user makes a request, you should determine if any of the available
-skills are relevant to the request. If a skill is applicable, you must use
-it to generate your response. If no skills are relevant, you can respond using
-your general knowledge and capabilities.
+skills are relevant to the request. If a skill is applicable, you must use it
+to generate your response. Only if no skills are relevant can you respond
+using just your general knowledge and capabilities.
 
-If you're unsure whether a skill is relevant, read the skill's instructions
-before deciding. Do this for any skill that looks like it is even remotely
-related to the user's request.
+If there's even a slight chance that a skill is relevant to the user's
+request, you must read the skill's instructions before deciding. Do this for
+any skill that looks like it is even remotely related to the user's request.
+If it is relevant, you must use it.
 
 Here are the skills currently available to you, a short description of each
 skill, and a link to the full instructions for that skill:
@@ -37,16 +38,17 @@ skill, and a link to the full instructions for that skill:
 | superpowers:writing-plans | Use when design is complete and you need detailed implementation tasks for engineers with zero codebase context - creates comprehensive implementation plans with exact file paths, complete code examples, and verification steps assuming engineer has minimal domain knowledge | [.github/skills/superpowers/writing-plans/SKILL.md](../.github/skills/superpowers/writing-plans/SKILL.md) |
 <!-- TABLE END -->
 
+- If you read a skill's instructions, say: "📖 **Read instructions for
+  skill:** skill-name 📖".
+- If you decide a skill is relevant, say: "✅ **Decided to use skill:**
+  skill-name ✅".
+- If you decide a skill is not relevant, say: "❌ **Decided not to use skill:**
+  skill-name ❌".
+
 When using a skill, make sure to follow the specific instructions provided for
 that skill. Each skill may have its own guidelines for how to format
 responses, what kind of content to include, and any other special
-considerations. Make sure you follow those instructions carefully.
-
-Any time you consider using a skill, you should announce which skill you are
-considering. For example, when thinking about using the "dad-joke" skill you
-should say: "💡 **Considering skill:** dad-joke 💡".
-
-Any time you use a skill, you should announce which skill you are using at the
-start of your response. For example, when activating the "dad-joke" skill you
-should start with: "▶️ **Activating skill:** dad-joke ◀️". This keeps the user
-informed about how you are assisting them.
+considerations. Make sure you follow those instructions carefully. **Use todos
+to track any steps required by the skill instructions.** It is very important
+that you adhere to the instructions for each skill to ensure you are using it
+correctly.
