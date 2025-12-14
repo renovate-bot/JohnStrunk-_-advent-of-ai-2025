@@ -31,6 +31,7 @@ exclude_lines = [
     # Don't complain about abstract methods, they aren't run:
     "@(abc.)?abstractmethod",
 ]
+omit = ["*_test.py", "test_*.py"]
 
 [tool.coverage.run]
 branch = true  # Enable branch coverage

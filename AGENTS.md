@@ -37,6 +37,13 @@ Each day's directory contains the following files:
 - `test-output.txt`: Expected output for the sample input data.
 - `README.md`: A markdown file documenting the solution approach, any
   challenges faced, and explanations of the code.
+- `__init__.py`: This file allows Python to treat the directory as a package,
+  ensuring proper module resolution during testing and execution. It can be
+  empty or contain a simple docstring, such as:
+
+  ```python
+  """Day XX package init."""
+  ```
 
 Only code that is specific to a particular day's challenge should reside in
 that day's directory. As much as possible, re-usable code should be placed in
@@ -96,3 +103,18 @@ should you commit your changes to the repository.
 - Retry the commit until it exits successfully and all hooks pass. You MUST
   CHECK THE RETURN STATUS of the git commit command. If it fails, you MUST fix
   the issues and reattempt the commit.
+
+## Additional Requirements for Day Directories
+
+To ensure consistent behavior and avoid import issues, each day's directory
+**must** include an `__init__.py` file. This file allows Python to treat the
+directory as a package, ensuring proper module resolution during testing and
+execution. The `__init__.py` file can be empty or contain a simple docstring,
+such as:
+
+```python
+"""Day XX package init."""
+```
+
+This practice prevents import conflicts and ensures that all test files can
+locate the correct modules for each day.

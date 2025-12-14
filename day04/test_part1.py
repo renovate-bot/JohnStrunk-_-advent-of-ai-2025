@@ -1,6 +1,6 @@
 """Test for day04 part1 solution."""
 
-import part1
+from day04.part1 import count_accessible_rolls
 
 
 def test_accessible_rolls_sample():
@@ -17,4 +17,4 @@ def test_accessible_rolls_sample():
         ".@@@@@@@@.",
         "@.@.@@@.@.",
     ]
-    assert part1.count_accessible_rolls(sample) == 13
+    assert count_accessible_rolls(sample) == 13

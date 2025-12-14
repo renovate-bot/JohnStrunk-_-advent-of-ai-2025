@@ -1,6 +1,6 @@
 """Tests for day06 part2.py."""
 
-from part2 import solve
+from day06.part2 import solve
 
 
 def test_example():
@@ -16,7 +16,7 @@ def test_example():
 
 def test_real_input():
     """Test the real input for regression safety."""
-    with open("input.txt") as f:
+    with open("day06/input.txt") as f:
         input_lines = f.read().splitlines()
     result = solve(input_lines)
     assert result == 9627174150897
