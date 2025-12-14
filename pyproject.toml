@@ -7,7 +7,7 @@ dependencies = []
 [dependency-groups]
 dev = [
     "pyright==1.1.407",
-    "pytest==9.0.1",
+    "pytest==9.0.2",
     "pytest-cov==7.0.0",
 ]
 
@@ -82,6 +82,11 @@ select = [
     "RUF",  # Ruff-specific
 ]
 pydocstyle.convention = "pep257"
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore magic value (PLR2004) in test files
+"*_test.py" = ["PLR2004"]
+"test_*.py" = ["PLR2004"]
 
 [tool.uv.pip]
 universal = true
