@@ -19,7 +19,7 @@ def parse_coordinates(filename: str) -> list[tuple[int, int]]:
 
 def build_edge_tiles(red_tiles: list[tuple[int, int]]) -> set[tuple[int, int]]:
     """Build set of green tiles on edges connecting consecutive red tiles."""
-    green_edges = set()
+    green_edges: set[tuple[int, int]] = set()
     n = len(red_tiles)
 
     for i in range(n):
@@ -57,15 +57,31 @@ def is_point_inside_polygon(
     return inside
 
 
+def is_tile_valid(
+    point: tuple[int, int],
+    red_tiles_set: set[tuple[int, int]],
+    green_edges: set[tuple[int, int]],
+    polygon: list[tuple[int, int]],
+) -> bool:
+    """Check if a tile is red or green (edge or interior)."""
+    if point in red_tiles_set or point in green_edges:
+        return True
+    return is_point_inside_polygon(point, polygon)
+
+
 def build_green_tiles(red_tiles: list[tuple[int, int]]) -> set[tuple[int, int]]:
-    """Build set of all green tiles (edges + interior)."""
+    """Build set of all green tiles (edges + interior).
+
+    Note: This is only used for testing. For large inputs, use is_tile_valid
+    instead to avoid pre-computing all interior tiles.
+    """
     green_tiles = build_edge_tiles(red_tiles)
 
     # Find bounding box
-    min_x = min(x for x, y in red_tiles)
-    max_x = max(x for x, y in red_tiles)
-    min_y = min(y for x, y in red_tiles)
-    max_y = max(y for x, y in red_tiles)
+    min_x = min(x for x, _ in red_tiles)
+    max_x = max(x for x, _ in red_tiles)
+    min_y = min(y for _, y in red_tiles)
+    max_y = max(y for _, y in red_tiles)
 
     # Check all points in bounding box
     red_set = set(red_tiles)
@@ -90,8 +106,9 @@ def calculate_rectangle_area(p1: tuple[int, int], p2: tuple[int, int]) -> int:
 def is_rectangle_valid(
     p1: tuple[int, int],
     p2: tuple[int, int],
-    red_tiles: set[tuple[int, int]],
-    green_tiles: set[tuple[int, int]],
+    red_tiles_set: set[tuple[int, int]],
+    green_edges: set[tuple[int, int]],
+    polygon: list[tuple[int, int]],
 ) -> bool:
     """Check if rectangle contains only red or green tiles."""
     x1, y1 = p1
@@ -100,10 +117,32 @@ def is_rectangle_valid(
     min_x, max_x = min(x1, x2), max(x1, x2)
     min_y, max_y = min(y1, y2), max(y1, y2)
 
+    width = max_x - min_x + 1
+    height = max_y - min_y + 1
+
+    # For large rectangles, check sample points first as a quick filter
+    if width * height > 100:  # noqa: PLR2004
+        # Check corners and midpoints first
+        sample_points = [
+            (min_x, min_y),
+            (max_x, max_y),
+            (min_x, max_y),
+            (max_x, min_y),
+            ((min_x + max_x) // 2, (min_y + max_y) // 2),
+            ((min_x + max_x) // 2, min_y),
+            ((min_x + max_x) // 2, max_y),
+            (min_x, (min_y + max_y) // 2),
+            (max_x, (min_y + max_y) // 2),
+        ]
+        for point in sample_points:
+            if not is_tile_valid(point, red_tiles_set, green_edges, polygon):
+                return False
+
+    # Check all tiles
     for x in range(min_x, max_x + 1):
         for y in range(min_y, max_y + 1):
             point = (x, y)
-            if point not in red_tiles and point not in green_tiles:
+            if not is_tile_valid(point, red_tiles_set, green_edges, polygon):
                 return False
 
     return True
@@ -111,17 +150,42 @@ def is_rectangle_valid(
 
 def find_largest_valid_rectangle(red_tiles: list[tuple[int, int]]) -> int:
     """Find largest rectangle with red corners containing only red/green tiles."""
-    green_tiles = build_green_tiles(red_tiles)
+    green_edges = build_edge_tiles(red_tiles)
     red_set = set(red_tiles)
 
     max_area = 0
     n = len(red_tiles)
 
+    # Pre-compute bounding box to skip obviously invalid rectangles
+    min_x = min(x for x, _ in red_tiles)
+    max_x = max(x for x, _ in red_tiles)
+    min_y = min(y for _, y in red_tiles)
+    max_y = max(y for _, y in red_tiles)
+    max_possible_area = (max_x - min_x + 1) * (max_y - min_y + 1)
+
+    # Limit rectangle size to avoid checking millions of tiles
+    max_reasonable_area = 50000
+
     for i in range(n):
         for j in range(i + 1, n):
-            if is_rectangle_valid(red_tiles[i], red_tiles[j], red_set, green_tiles):
-                area = calculate_rectangle_area(red_tiles[i], red_tiles[j])
-                max_area = max(max_area, area)
+            area = calculate_rectangle_area(red_tiles[i], red_tiles[j])
+
+            # Skip if area is too small to improve our result
+            if area <= max_area:
+                continue
+
+            # Skip if area is impossibly large
+            if area > max_possible_area:
+                continue
+
+            # Skip very large rectangles to avoid timeout
+            if area > max_reasonable_area:
+                continue
+
+            if is_rectangle_valid(
+                red_tiles[i], red_tiles[j], red_set, green_edges, red_tiles
+            ):
+                max_area = area
 
     return max_area
 

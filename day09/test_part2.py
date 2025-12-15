@@ -97,17 +97,24 @@ def test_calculate_rectangle_area() -> None:
 
 def test_is_rectangle_valid() -> None:
     """Test rectangle validation."""
-    red_tiles = {(0, 0), (2, 0), (2, 2), (0, 2)}
-    green_tiles = {(1, 0), (2, 1), (1, 2), (0, 1), (1, 1)}  # Edges + center
+    red_tiles_list = [(0, 0), (2, 0), (2, 2), (0, 2)]
+    red_tiles_set = set(red_tiles_list)
+    green_edges = build_edge_tiles(red_tiles_list)
 
     # Rectangle with all red/green tiles
-    assert is_rectangle_valid((0, 0), (2, 2), red_tiles, green_tiles)
+    assert is_rectangle_valid(
+        (0, 0), (2, 2), red_tiles_set, green_edges, red_tiles_list
+    )
 
     # Rectangle with only red corners
-    assert is_rectangle_valid((0, 0), (2, 0), red_tiles, green_tiles)
+    assert is_rectangle_valid(
+        (0, 0), (2, 0), red_tiles_set, green_edges, red_tiles_list
+    )
 
     # Rectangle extending beyond red/green tiles
-    assert not is_rectangle_valid((0, 0), (5, 5), red_tiles, green_tiles)
+    assert not is_rectangle_valid(
+        (0, 0), (5, 5), red_tiles_set, green_edges, red_tiles_list
+    )
 
 
 def test_find_largest_valid_rectangle_example() -> None:
