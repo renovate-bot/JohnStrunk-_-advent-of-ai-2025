@@ -73,7 +73,7 @@ def test_find_largest_rectangle_collinear():
     assert find_largest_rectangle(coordinates) == 7
 
 
-def test_parse_coordinates(tmp_path):
+def test_parse_coordinates(tmp_path: Path) -> None:
     """Test parsing coordinates from a file."""
     test_file = tmp_path / "test.txt"
     test_file.write_text("1,2\n3,4\n5,6\n")
@@ -82,7 +82,7 @@ def test_parse_coordinates(tmp_path):
     assert coords == [(1, 2), (3, 4), (5, 6)]
 
 
-def test_parse_coordinates_with_empty_lines(tmp_path):
+def test_parse_coordinates_with_empty_lines(tmp_path: Path) -> None:
     """Test parsing with empty lines."""
     test_file = tmp_path / "test.txt"
     test_file.write_text("1,2\n\n3,4\n\n\n")

@@ -6,12 +6,13 @@ import sys
 
 def parse_coordinates(filename: str) -> list[tuple[int, int]]:
     """Parse coordinate pairs from input file."""
-    coordinates = []
+    coordinates: list[tuple[int, int]] = []
     with open(filename) as f:
         for raw_line in f:
             line = raw_line.strip()
             if line:
-                x, y = map(int, line.split(","))
+                parts = line.split(",")
+                x, y = int(parts[0]), int(parts[1])
                 coordinates.append((x, y))
     return coordinates
 
