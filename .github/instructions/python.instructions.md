@@ -68,6 +68,13 @@ def divide_numbers(a: float, b: float) -> float:
     return a / b
 ```
 
+## Code structure
+
+- Keep code modular and organized. Each module should have a clear purpose
+  and be as small as possible while still being functional.
+- Use functional programming principles where possible. Avoid unnecessary
+  state and side effects.
+
 ## Testing
 
 - All Python code must be covered by unit tests using `pytest`. Use tools and
