@@ -3,12 +3,12 @@
 from pathlib import Path
 
 from day09.part2 import (
-    build_edge_tiles,
-    build_green_tiles,
-    calculate_rectangle_area,
+    build_green_edges,
     find_largest_valid_rectangle,
+    has_red_tile_strictly_inside,
+    is_perimeter_valid,
     is_point_inside_polygon,
-    is_rectangle_valid,
+    is_tile_valid,
     parse_coordinates,
 )
 
@@ -22,11 +22,11 @@ def test_parse_coordinates(tmp_path: Path) -> None:
     assert coords == [(1, 2), (3, 4), (5, 6)]
 
 
-def test_build_edge_tiles() -> None:
+def test_build_green_edges() -> None:
     """Test building green tiles on edges."""
     # Simple square
     red_tiles = [(0, 0), (2, 0), (2, 2), (0, 2)]
-    edges = build_edge_tiles(red_tiles)
+    edges = build_green_edges(red_tiles)
 
     # Should have edges but not corners
     assert (1, 0) in edges  # Top edge
@@ -56,65 +56,56 @@ def test_is_point_inside_polygon() -> None:
     assert not is_point_inside_polygon((-1, 2), square)
     assert not is_point_inside_polygon((2, 5), square)
 
-    # Points on boundary are tricky - ray casting may vary
-    # but for our use case, we handle them separately
+
+def test_is_tile_valid() -> None:
+    """Test tile validation."""
+    red_tiles = [(0, 0), (2, 0), (2, 2), (0, 2)]
+    red_set = set(red_tiles)
+    green_edges = build_green_edges(red_tiles)
+    bbox = (0, 2, 0, 2)
+
+    # Red tiles are valid
+    assert is_tile_valid((0, 0), red_set, green_edges, red_tiles, bbox)
+
+    # Green edge tiles are valid
+    assert is_tile_valid((1, 0), red_set, green_edges, red_tiles, bbox)
+
+    # Interior tiles are valid
+    assert is_tile_valid((1, 1), red_set, green_edges, red_tiles, bbox)
+
+    # Outside tiles are invalid
+    assert not is_tile_valid((5, 5), red_set, green_edges, red_tiles, bbox)
 
 
-def test_build_green_tiles_example() -> None:
-    """Test building green tiles with the puzzle example."""
-    red_tiles = [
-        (7, 1),
-        (11, 1),
-        (11, 7),
-        (9, 7),
-        (9, 5),
-        (2, 5),
-        (2, 3),
-        (7, 3),
-    ]
+def test_has_red_tile_strictly_inside() -> None:
+    """Test checking for red tiles strictly inside rectangle."""
+    red_tiles = [(0, 0), (5, 0), (5, 5), (0, 5), (2, 2)]
 
-    green_tiles = build_green_tiles(red_tiles)
+    # Rectangle with red tile strictly inside
+    assert has_red_tile_strictly_inside((0, 0), (5, 5), red_tiles)
 
-    # Check some edge tiles
-    assert (8, 1) in green_tiles  # Edge from (7,1) to (11,1)
-    assert (11, 3) in green_tiles  # Edge from (11,1) to (11,7)
+    # Rectangle with red tile on boundary (OK)
+    assert not has_red_tile_strictly_inside((0, 0), (5, 0), red_tiles)
 
-    # Check some interior tiles
-    assert (8, 4) in green_tiles  # Should be inside
-    assert (10, 2) in green_tiles  # Should be inside
-
-    # Red tiles should not be in green tiles
-    assert (7, 1) not in green_tiles
-    assert (11, 1) not in green_tiles
+    # Rectangle with no red tiles inside
+    assert not has_red_tile_strictly_inside((0, 0), (2, 0), red_tiles)
 
 
-def test_calculate_rectangle_area() -> None:
-    """Test rectangle area calculation."""
-    assert calculate_rectangle_area((0, 0), (2, 2)) == 9
-    assert calculate_rectangle_area((1, 1), (4, 5)) == 20
-    assert calculate_rectangle_area((5, 5), (5, 5)) == 1
+def test_is_perimeter_valid() -> None:
+    """Test perimeter validation."""
+    red_tiles = [(0, 0), (2, 0), (2, 2), (0, 2)]
+    red_set = set(red_tiles)
+    green_edges = build_green_edges(red_tiles)
+    bbox = (0, 2, 0, 2)
 
+    # Valid rectangle within polygon
+    assert is_perimeter_valid((0, 0), (2, 2), red_set, green_edges, red_tiles, bbox)
 
-def test_is_rectangle_valid() -> None:
-    """Test rectangle validation."""
-    red_tiles_list = [(0, 0), (2, 0), (2, 2), (0, 2)]
-    red_tiles_set = set(red_tiles_list)
-    green_edges = build_edge_tiles(red_tiles_list)
+    # Valid edge rectangle
+    assert is_perimeter_valid((0, 0), (2, 0), red_set, green_edges, red_tiles, bbox)
 
-    # Rectangle with all red/green tiles
-    assert is_rectangle_valid(
-        (0, 0), (2, 2), red_tiles_set, green_edges, red_tiles_list
-    )
-
-    # Rectangle with only red corners
-    assert is_rectangle_valid(
-        (0, 0), (2, 0), red_tiles_set, green_edges, red_tiles_list
-    )
-
-    # Rectangle extending beyond red/green tiles
-    assert not is_rectangle_valid(
-        (0, 0), (5, 5), red_tiles_set, green_edges, red_tiles_list
-    )
+    # Invalid rectangle extending outside
+    assert not is_perimeter_valid((0, 0), (5, 5), red_set, green_edges, red_tiles, bbox)
 
 
 def test_find_largest_valid_rectangle_example() -> None:
