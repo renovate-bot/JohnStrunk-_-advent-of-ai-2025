@@ -50,58 +50,60 @@ the number of buttons, and f is the number of free variables.
 - Efficient pivot finding
 - Early inconsistency detection
 
-### Part 2: Gaussian Elimination over Integers
+### Part 2: Integer Linear Programming (ILP)
 
-The joltage counter problem is a system of linear equations over
-non-negative integers:
+The joltage counter problem is a classic Integer Linear Programming
+optimization problem:
 
-- Each button can be pressed multiple times (non-negative integer)
-- Counter values are non-negative integers
-- Operations are addition
+**Problem Formulation:**
+
+- **Variables:** x₁, x₂, ..., xₘ (number of times to press each button)
+- **Objective:** Minimize Σxᵢ (total button presses)
+- **Constraints:**
+  - For each counter j: Σ(xᵢ where button i affects counter j) = target[j]
+  - All xᵢ ≥ 0 and integer
 
 **Algorithm:**
 
-1. Build coefficient matrix A where `A[i][j] = 1` if button j affects counter i
-2. Perform Gaussian elimination using rational arithmetic (fractions) to find
-   exact solutions
-3. Identify free variables (buttons whose press count isn't determined by
-   pivots)
-4. Search over reasonable ranges of free variable values
-5. For each combination, back-substitute to find dependent variables
-6. Check if all variables are non-negative integers
-7. Track the minimum total presses
+1. Build coefficient matrix A where `A[counter][button] = 1` if that button
+   affects that counter
+2. Create ILP problem with:
+   - Decision variables for each button (non-negative integers)
+   - Objective: minimize sum of all button press variables
+   - Constraints: sum of button presses affecting each counter = target value
+3. Solve using CBC (COIN-OR Branch and Cut) solver via PuLP library
+4. Extract optimal solution
 
-**Time Complexity:** O(n³ + R^f × m) where n is the number of counters, m is
-the number of buttons, f is the number of free variables, and R is the search
-range for each free variable.
+**Time Complexity:** Polynomial in practice for most instances, though ILP is
+NP-hard in the worst case. The CBC solver uses branch-and-bound with cutting
+planes, making it very efficient for typical problem sizes.
 
-**Key Differences from Part 1:**
+**Why ILP Instead of Search:**
 
-- Uses rational arithmetic (Fraction) instead of binary arithmetic
-- Free variables can take values in `[0, max_target]` instead of just `{0, 1}`
-- Must validate that solutions are non-negative integers
-- Search space is much larger when there are free variables
+Search-based approaches (BFS, DFS, A*) fail on this problem because the state
+space is too large. For targets like `[198, 181, 22, 50, 173, 65]`, there are
+billions of possible states even with aggressive pruning.
 
-**Optimizations:**
+ILP solvers are specifically designed for this type of optimization and handle
+it efficiently by:
 
-- Using Python's built-in Fraction for exact rational arithmetic
-- Bounded search range based on maximum target value
-- Early validation of solution feasibility
+- Using LP relaxation to compute bounds
+- Pruning the search tree intelligently
+- Applying cutting plane algorithms to tighten constraints
 
 ## Challenges
 
 1. **Part 1:** Handling underdetermined systems where multiple solutions
    exist, requiring enumeration over free variables.
 
-2. **Part 2:** The main challenge is determining an appropriate search range
-   for free variables. The current implementation uses `max_target + 1`, which
-   works for the given examples but may need adjustment for edge cases where
-   buttons have overlapping effects or the optimal solution uses larger
-   intermediate values.
+2. **Part 2:** Initial attempts using search-based algorithms (BFS, DFS, A*)
+   failed due to the enormous state space. With targets up to 257, even with
+   aggressive pruning, the number of reachable states can be in the billions.
+   The solution required recognizing this as an optimization problem and using
+   Integer Linear Programming.
 
-3. **Performance:** For problems with many free variables, the search space
-   grows exponentially. The current implementation is efficient for the given
-   constraints but could be optimized further using techniques like:
-   - Linear programming with simplex method
-   - Branch and bound
-   - Heuristic search strategies
+3. **Algorithm Selection:** This problem demonstrates the importance of
+   choosing the right algorithm. Search algorithms are intuitive but infeasible
+   for large state spaces. ILP, while more complex to set up, solves the
+   problem optimally in under a second by exploiting the mathematical structure
+   of the constraints.
