@@ -4,7 +4,7 @@
 def solve(input_data: str) -> int:
     """Count all distinct paths from 'you' to 'out' in the device graph described by input_data."""
     # Parse the input into a graph
-    graph = {}
+    graph: dict[str, list[str]] = {}
     for line in input_data.strip().splitlines():
         if not line.strip():
             continue
@@ -12,6 +12,7 @@ def solve(input_data: str) -> int:
         graph[name.strip()] = [x.strip() for x in rest.strip().split()]
 
     # DFS to count all paths from 'you' to 'out'
+
     def dfs(node: str) -> int:
         """Recursively count all paths from node to 'out'."""
         if node == "out":

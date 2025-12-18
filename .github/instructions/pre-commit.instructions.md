@@ -21,3 +21,5 @@ Before committing changes, you must follow these guidelines:
 - You must repeat this process until the commit is successful. Note that since
   your commit has failed, you do not have a previous commit to "fix" (so don't
   use `--amend` or `--no-edit`).
+- When committing changes, ensure that your commit messages cover all changes
+  made, not just changes to fix pre-commit issues.
